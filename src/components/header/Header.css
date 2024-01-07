@@ -1,0 +1,11 @@
+.ant-typography {
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .ant-menu-horizontal {
+    line-height: 64px;
+  }
+
