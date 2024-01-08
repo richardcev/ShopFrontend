@@ -62,6 +62,12 @@ const Busqueda = styled.div`
     width: 30%;
     margin-top: 2%;
     margin-left: 35%;
+
+    @media (max-width: 767px) {
+    /* Cambia a una sola columna en pantallas más pequeñas */
+    position: relative;
+    width: 80%;
+  }
 `;
 
 const InputBusqueda = styled.input`

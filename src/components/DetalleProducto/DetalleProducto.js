@@ -86,12 +86,12 @@ const DetalleProducto = () => {
             <Button
              type='primary' 
              size='large'
-             style={{ backgroundColor: '#DD2011', borderColor: '#DD2011' }}
+             style={{ backgroundColor: '#030201', borderColor: '#030201' }}
              >Comprar</Button>
             <Button 
               type='primary' 
               size='large' 
-              style={{marginLeft:'10px', backgroundColor: '#DD2011', borderColor: '#DD2011' }}
+              style={{marginLeft:'10px', backgroundColor: '#030201', borderColor: '#030201' }}
               onClick={addProductCard}
               >
               Añadir al carrito

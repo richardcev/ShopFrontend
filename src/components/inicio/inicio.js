@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
+import CustomizedInputBase from './searchProduct';
 const Inicio = () =>{
      const dispatch = useDispatch();
      const {
@@ -40,7 +41,7 @@ const Inicio = () =>{
     return(
         <>
         {/* <LandingPage/> */}
-        <InputProducto/>
+        <CustomizedInputBase/>
         <Container>
           <ProductContainer>
             {productos.map(producto => (
@@ -65,6 +66,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center; /* Centra horizontalmente */
   align-items: center; /* Centra verticalmente */
+  width: 100%;
 `;
 
 
@@ -78,4 +80,10 @@ const ProductContainer = styled.div`
 
   /* Centra el contenido horizontalmente dentro del contenedor */
   margin: 0 auto;
+
+  @media (max-width: 767px) {
+    /* Cambia a una sola columna en pantallas más pequeñas */
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
 `;

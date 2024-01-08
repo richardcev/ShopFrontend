@@ -65,7 +65,7 @@ function Header({ handleResetFiltros }) {
   }
 
   return (
-    <Menu mode="horizontal" style={{ backgroundColor: '#DD2011' }}>
+    <Menu mode="horizontal" style={{ backgroundColor: '#030201' }}>
       <Row justify="space-between" align="middle">
         <Col>
           <Menu.Item key="logo">

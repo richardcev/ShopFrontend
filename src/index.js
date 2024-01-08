@@ -14,6 +14,7 @@ import AppFooter from './components/inicio/footer'
 import { Provider } from "react-redux";
 import generateStore from "./redux";
 import { PersistGate } from 'redux-persist/integration/react'
+import ResponsiveAppBar from './components/header/Navbar'
 
 const { store, persistor } = generateStore();
 
@@ -22,7 +23,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
-      <Header/>
+      <ResponsiveAppBar/>
+      
         <Routes>
           <Route path='/' element={ <Inicio />}></Route>
           <Route path='/login' element= {<Login />}></Route>
