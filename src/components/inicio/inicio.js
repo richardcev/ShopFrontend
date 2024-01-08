@@ -1,9 +1,7 @@
 import './inicio.css'
 import Producto from '../producto/Producto';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState, useEffect, useContext } from 'react';
-import InputProducto from './inputProducto';
-import LandingPage from './LandingPage';
+import { useEffect} from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';

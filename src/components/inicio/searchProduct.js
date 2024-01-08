@@ -1,10 +1,9 @@
-import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';
 import { useState } from 'react';
 
