@@ -154,7 +154,7 @@ function ResponsiveAppBar() {
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component="a"
             href="#app-bar-with-responsive-menu"
@@ -169,7 +169,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            MATT STORE
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {categorias.map((categoria) => (
@@ -215,7 +215,7 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0, marginLeft: '20px', cursor:'pointer'}}>
             <ShoppingCartTwoToneIcon 
-                sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} 
+                sx={{ p: 0 }} 
                 onClick={handleCart}
             />
           </Box>
