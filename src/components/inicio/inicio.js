@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
-import CustomizedInputBase from './searchProduct';
 const Inicio = () =>{
      const dispatch = useDispatch();
      const {
@@ -18,7 +17,7 @@ const Inicio = () =>{
     useEffect(() =>{
         const fetchProductos = async () => {
             try {
-              const response = await fetch('http://18.232.56.56/productos/');
+              const response = await fetch('http://127.0.0.1:8000/productos/');
               const data = await response.json();
               dispatch(setProducts(data.productos))
             } catch (error) {
@@ -39,7 +38,6 @@ const Inicio = () =>{
     return(
         <>
         {/* <LandingPage/> */}
-        <CustomizedInputBase/>
         <Container>
           <ProductContainer>
             {productos.map(producto => (

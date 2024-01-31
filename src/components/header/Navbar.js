@@ -17,9 +17,11 @@ import { setProducts } from '../../redux/states/ProductReducer';
 import { useNavigate } from "react-router-dom";
 import ShoppingCartTwoToneIcon from '@mui/icons-material/ShoppingCartTwoTone';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
+import logo from '../../assets/images/LOGOMATT.png'
+import styled from 'styled-components';
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -39,7 +41,7 @@ function ResponsiveAppBar() {
   });
 
   useEffect(() =>{
-    fetch('http://18.232.56.56/categorias/')
+    fetch('http://127.0.0.1:8000/categorias/')
     .then(response => response.json())
     .then(data =>{
 
@@ -51,7 +53,7 @@ function ResponsiveAppBar() {
   const handleStart = () =>{
     const fetchProductos = async () => {
       try {
-        const response = await fetch('http://18.232.56.56/productos/');
+        const response = await fetch('http://127.0.0.1:8000/productos/');
         const data = await response.json();
         dispatch(setProducts(data.productos))
         navigate('/')
@@ -63,7 +65,7 @@ function ResponsiveAppBar() {
   }
 
   const handleCategoria = (categoria) =>{
-    fetch(`http://18.232.56.56/categoria/${categoria}/`)
+    fetch(`http://127.0.0.1:8000/categoria/${categoria}/`)
     .then(response => response.json())
     .then(data =>{
         console.log(data)
@@ -93,11 +95,14 @@ function ResponsiveAppBar() {
   };
 
   return (
+    <>
+      <ContainerImg>
+        <img src={logo} alt="Supermercado" width={"20%"}/>
+      </ContainerImg>
     <ThemeProvider theme={theme}>
     <AppBar position="static" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -223,6 +228,20 @@ function ResponsiveAppBar() {
       </Container>
     </AppBar>
     </ThemeProvider>
+    </>
   );
 }
 export default ResponsiveAppBar;
+
+const ContainerImg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 20vh;
+  overflow: hidden; 
+
+  img {
+    width: 100%; 
+    height: auto; 
+  } */
+`;

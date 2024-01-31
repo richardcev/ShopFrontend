@@ -2,10 +2,13 @@ import axios from "axios";
 
 const initialState = {
   productsCart: [],
+  subTotal: 0,
 };
 
 const ADD_PRODUCT_TO_CART = "ADD_PRODUCT_TO_CART";
 const REMOVE_PRODUCT_FROM_CART= "REMOVE_PRODUCT_FROM_CART"
+const UPDATE_PRODUCT_FROM_CART= "UPDATE_PRODUCT_FROM_CART"
+const SET_SUB_TOTAL= "SET_SUB_TOTAL"
 
 export default function CartReducer(state = initialState, action) {
   switch (action.type) {
@@ -14,7 +17,7 @@ export default function CartReducer(state = initialState, action) {
         ...state,
         productsCart: [...state.productsCart, action.payload],
       };
-      case REMOVE_PRODUCT_FROM_CART:
+    case REMOVE_PRODUCT_FROM_CART:
         const updatedProducts = state.productsCart.filter(
           (product) => product.id !== action.payload.id
         );
@@ -22,6 +25,20 @@ export default function CartReducer(state = initialState, action) {
           ...state,
           productsCart: updatedProducts,
         };
+    case UPDATE_PRODUCT_FROM_CART:
+        const updatedCart = state.productsCart.map((product) =>
+          product.id === action.payload.id ? action.payload : product
+        );
+        return {
+          ...state,
+          productsCart: updatedCart,
+        };
+    case SET_SUB_TOTAL:
+      return {
+        ...state,
+        subTotal: action.payload,
+      };
+      
     default:
       return state;
   }
@@ -35,4 +52,14 @@ export const addProduct = (product) => ({
 export const deleteProduct = (product) => ({
     type: REMOVE_PRODUCT_FROM_CART,
     payload: product,
+});
+
+export const updateProduct = (product) => ({
+  type: UPDATE_PRODUCT_FROM_CART,
+  payload: product
+})
+
+export const setSubTotal = (subTotal) => ({
+  type: SET_SUB_TOTAL,
+  payload: subTotal,
 });

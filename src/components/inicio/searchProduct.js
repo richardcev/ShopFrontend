@@ -30,7 +30,7 @@ export default function CustomizedInputBase() {
 
     const fetchData = async () => {
         try {
-          const response = await fetch(`http://18.232.56.56/search/?text=${busqueda.toLowerCase()}`);
+          const response = await fetch(`http://127.0.0.1:8000/search/?text=${busqueda.toLowerCase()}`);
           const data = await response.json();
           dispatch(setProducts(data.productos));
         } catch (error) {
@@ -41,7 +41,7 @@ export default function CustomizedInputBase() {
     <Busqueda>
     <Paper
       component="form"
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 700 }}
     >
       <InputBase
         sx={{ ml: 1, flex: 1 }}
@@ -59,8 +59,5 @@ export default function CustomizedInputBase() {
 }
 
 const Busqueda = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-margin-top: 20px;
+margin-right: 200px;
 `;

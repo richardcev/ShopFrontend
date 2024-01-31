@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import generateStore from "./redux";
 import { PersistGate } from 'redux-persist/integration/react'
 import ResponsiveAppBar from './components/header/Navbar'
+import HeaderCustom from './components/header/HeaderCustom'
 
 const { store, persistor } = generateStore();
 
@@ -21,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
-      <ResponsiveAppBar/>
+      <HeaderCustom/>
       
         <Routes>
           <Route path='/' element={ <Inicio />}></Route>

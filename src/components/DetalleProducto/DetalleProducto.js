@@ -5,14 +5,15 @@ import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
 import { useSelector } from 'react-redux';
-import { addProduct } from '../../redux/states/CartReducer';
+import { addProduct, updateProduct } from '../../redux/states/CartReducer';
 import { useNavigate } from 'react-router-dom';
+import { setSubTotal } from '../../redux/states/CartReducer';
 
 const DetalleProducto = () => {
     const dispatch = useDispatch();
     const params = useParams()
     const { cartproducts } = useSelector((store) => store)
-    const { productosCarrito } = cartproducts
+    const { productsCart, subTotal } = cartproducts
     const [producto, setProducto] = useState([])
     const [cantidad, setCantidad] = useState(1);
 
@@ -40,7 +41,7 @@ const DetalleProducto = () => {
     useEffect(() =>{
       console.log("entro a detalle producto")
       dispatch(setIsProductSelected(true))
-      fetch(`http://18.232.56.56/producto/${params.id}/`)
+      fetch(`http://127.0.0.1:8000/producto/${params.id}/`)
       .then(response => response.json())
       .then(data =>{
         console.log("detalleproducto")
@@ -53,10 +54,29 @@ const DetalleProducto = () => {
     }, [])
 
     const addProductCard = () =>{
-      let total = cantidad * parseFloat(producto.precio)
-      producto.total= total.toFixed(2)
-      producto.cantidad= cantidad
-      dispatch(addProduct(producto))
+      const productexist = productsCart.some((product) => product.id == producto.id)
+      if(productexist){
+        let productArray = productsCart.filter((product) => product.id == producto.id)
+        let product = productArray[0]
+        let newCantidad = product.cantidad + cantidad 
+        let newTotal = Number(product.total) + cantidad * producto.precio
+        product.cantidad = newCantidad
+        product.total = newTotal.toFixed(2)
+        let subtotal = newTotal + Number(subTotal)
+        dispatch(setSubTotal(subtotal.toFixed(2)))
+        dispatch(updateProduct(product))
+      }
+      else{
+        let total = cantidad * parseFloat(producto.precio)
+        let subtotal= total + Number(subTotal)
+        dispatch(setSubTotal(subtotal.toFixed(2)))
+        producto.total= total.toFixed(2)
+        producto.cantidad= cantidad
+        dispatch(addProduct(producto))
+
+      }
+
+      
       navigate('/cart')
     }
     
@@ -87,7 +107,7 @@ const DetalleProducto = () => {
              type='primary' 
              size='large'
              style={{ backgroundColor: '#030201', borderColor: '#030201' }}
-             >Comprar</Button>
+             >Comprar ahora</Button>
             <Button 
               type='primary' 
               size='large' 

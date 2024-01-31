@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const Producto= ({id, nombre, imagen, precio, categoria}) =>{
     
     return(
-        <div className="product-card">
+        <div className="product-card" style={{backgroundColor: "#FFF"}}>
             <Link to={`/producto/${id}`}>
                 <img src={imagen} alt="imagen" className="product-card-img" />
             </Link>
