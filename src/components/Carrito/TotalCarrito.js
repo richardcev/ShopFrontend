@@ -1,13 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
-const TotalCarrito = ({subtotal}) =>{
+import { useNavigate } from 'react-router-dom';
+const TotalCarrito = ({subtotal, total, setTotal}) =>{
     const { cartproducts } = useSelector((store) => store)
     const { productsCart, subTotal } = cartproducts;
 
     const [opcionSeleccionada, setOpcionSeleccionada] = useState('');
-    const [total, setTotal] = useState(subtotal)
+    const navigate = useNavigate();
+    // const [total, setTotal] = useState(subtotal)
 
     const handleChange = (event) => {
         const valorSeleccionado = event.target.value;
@@ -21,61 +23,60 @@ const TotalCarrito = ({subtotal}) =>{
             newTotal = Number(subtotal) + 5
         }
         else{
-            newTotal= subtotal
+            newTotal= Number(subtotal)
         }
-        setTotal(newTotal)
+        setTotal(newTotal.toFixed(2))
 
-      };
+    };
+
+    const handleFinalizar = () =>{
+        navigate('/facturacion')
+    }
 
     return(
         <Container>
             <h4 style={{marginLeft: "120px"}}>TOTAL DEL CARRITO</h4>
             <Campo>
-            <p><b>Subtotal</b></p>
-            <p>${subtotal}</p>
+            <p style={{fontSize: "20px"}}><b>Subtotal</b></p>
+            <p style={{fontSize: "20px"}}>${subtotal}</p>
             </Campo>
             <TopLine/>
             <fieldset id = "group">
             <Radio>
                 <label htmlFor="rec">Recoger pedido</label>
-                <input type="radio" id="rec" name="group" value="rec" onChange={handleChange} checked={opcionSeleccionada === 'rec'}/>
+                <input  style={{marginLeft:"5px"}}  type="radio" id="rec" name="group" value="rec" onChange={handleChange} checked={opcionSeleccionada === 'rec'}/>
                 <p>Villa Club Cosmos, Mz 5 v 23</p>
             </Radio>
 
             <Campo>
-            <p style={{marginLeft: "25px"}}><b>Envío</b></p>
+            <p style={{marginLeft: "25px", fontSize: "20px"}}><b>Envío</b></p>
             <p style={{fontSize: "11px"}}>Las compras a partir de las <br/> 10pm  se envían al día siguiente</p>
             </Campo>
 
-            
-
             <Radio>
                 <label htmlFor="gye">Guayaquil: $3.00</label>
-                <input type="radio" id="gye" name="group" value="gye" onChange={handleChange} checked={opcionSeleccionada === 'gye'}/>
+                <input style={{marginLeft:"5px"}} type="radio" id="gye" name="group" value="gye" onChange={handleChange} checked={opcionSeleccionada === 'gye'}/>
             </Radio>
 
             <Radio>
                 <label htmlFor="res">Resto del país: $5.00</label>
-                <input type="radio" id="res" name="group" value="res" onChange={handleChange} checked={opcionSeleccionada === 'res'} />
+                <input style={{marginLeft:"5px"}} type="radio" id="res" name="group" value="res" onChange={handleChange} checked={opcionSeleccionada === 'res'} />
             </Radio>
             </fieldset>
 
-            
             <TopLine/>
 
             <Campo>
-            <p><b>Total</b></p>
-            <p>${total}</p>
+            <p style={{fontSize: "20px"}}><b>Total</b></p>
+            <p style={{fontSize: "20px"}}>${total}</p>
             </Campo>
-            <FinalizarButton
-             type='primary' 
+            <Button
+             variant="contained"
              size='large'
+             onClick={handleFinalizar}
              >
             Finalizar compra
-            </FinalizarButton>
-
-
-
+            </Button>
         </Container>
     )
 
@@ -105,11 +106,11 @@ margin-left: 120px;
 margin-top: 20px;
 `
 
-const FinalizarButton= styled(Button)`
-  background-color: #030201;
-  border-color: #030201;
-  margin-top: 15px;
-  margin-left: 120px;
-  width: 65%;
+// const FinalizarButton= styled(Button)`
+//   background-color: #030201;
+//   border-color: #030201;
+//   margin-top: 15px;
+//   margin-left: 120px;
+//   width: 65%;
 
-`
+// `

@@ -2,19 +2,15 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { deleteProduct, setSubTotal } from "../../redux/states/CartReducer";
-import { Select, Space } from 'antd';
-import { Button } from 'antd';
+import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useEffect, useState } from "react";
 import { updateProduct } from "../../redux/states/CartReducer";
 import TotalCarrito from "./TotalCarrito";
 
-
-
-
-
 const Carrito = () =>{
     const { cartproducts } = useSelector((store) => store)
     const { productsCart, subTotal } = cartproducts;
+    const [totalScreen, setTotalScreen] = useState(subTotal)
     const dispatch= useDispatch();
 
     const [cantidad, setCantidad] = useState(1);
@@ -26,8 +22,6 @@ const Carrito = () =>{
       console.log("SUBTOTAL")
       console.log(subTotal)
       // dispatch(setSubTotal(0))
-
-
     },[productsCart])
 
     const handleRemoveProduct = (productid) =>{
@@ -38,24 +32,27 @@ const Carrito = () =>{
             }
         }
         let subtotal = Number(subTotal) - Number(deletedProduct.total)
+        let newTotal = Number(totalScreen) - Number(deletedProduct.total)
         dispatch(setSubTotal(subtotal.toFixed(2)))
         dispatch(deleteProduct(deletedProduct))
+        setTotalScreen(newTotal.toFixed(2))
     }
 
     const handleSelect= (e, product) =>{
-      const value = e
+      const value = e.target.value
       setCantidad(value)
       let updatedProduct = product
       updatedProduct.cantidad = value
       let total = value * updatedProduct.precio
       let subtotal = (Number(subTotal) - Number(updatedProduct.total) + total )
+      let newTotal = (Number(totalScreen) - Number(updatedProduct.total) + total )
       updatedProduct.total=  total.toFixed(2)
       dispatch(setSubTotal(subtotal.toFixed(2)))
       dispatch(updateProduct(updatedProduct))
+      setTotalScreen(newTotal.toFixed(2))
     }
 
     return(
-
       < ParentContainer>
         <Container>
         {
@@ -67,23 +64,26 @@ const Carrito = () =>{
                 <Imagen src={product.imagen}/>
                 </div>
                 <div style={{marginTop:"20px"}}>
-                  <h5>{product.nombre}</h5>
+                  <h3>{product.nombre}</h3>
                   <Opciones>
-                    <p style={{fontSize: "18px"}}>Cantidad</p>
-                    <Select defaultValue={product.cantidad} onChange={(selectedValue) => handleSelect(selectedValue, product)}>
-                      {numeros.map((numero) => (
-                        <Option key={numero} value={numero}>
-                          {numero}
-                        </Option>
-                      ))}
-                    </Select>
-
-
+                    <FormControl variant="outlined" size="small">
+                        <InputLabel>Cant</InputLabel>
+                        <Select
+                            label="Cantidad"
+                            value={product.cantidad}
+                            onChange={(selectedValue) => handleSelect(selectedValue, product)}
+                        >
+                            {numeros.map((numero) => (
+                                <MenuItem key={numero} value={numero}>
+                                    {numero}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <RemoveButton onClick={() => handleRemoveProduct(product.id)}>
                           Eliminar
                     </RemoveButton>
                   </Opciones>
-
                 </div>
                 <div style={{marginTop:"18px"}}>
                 <Precio>${product.precio}</Precio>
@@ -92,24 +92,13 @@ const Carrito = () =>{
               </>
             ))
         }
-
           <TopLine/>
-
-        
-
-
-
         </Container>
-
-        <TotalCarrito subtotal={subTotal}/>
-
+        <TotalCarrito subtotal={subTotal} total={totalScreen} setTotal={setTotalScreen}/>
         </ParentContainer>
     )
 }
-
-
 export default Carrito;
-
 
 const ParentContainer= styled.div`
 display: grid;
@@ -126,7 +115,6 @@ const Container = styled.div`
 
 `;
 
-
 const Product = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -140,6 +128,7 @@ const RemoveButton = styled.button`
   background: none;
   border: none;
   font-size: 18px;
+  margin-left: 18px;
   cursor: pointer;
 `;
 

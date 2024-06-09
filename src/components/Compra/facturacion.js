@@ -1,9 +1,8 @@
 const Facturacion = () =>{
+    
     return(
-        <div>
-            Hola mundo
+        <div className="card flex flex-column  gap-3 ">
         </div>
-
     )
 }
 
