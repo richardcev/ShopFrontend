@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
-import Productos from './components/producto/Producto'
 import Login from './components/usuarios/Login'
 import DetalleProducto from './components/DetalleProducto/DetalleProducto'
 import Inicio from './components/inicio/inicio'
@@ -15,6 +14,10 @@ import generateStore from "./redux";
 import { PersistGate } from 'redux-persist/integration/react'
 import HeaderCustom from './components/header/HeaderCustom'
 import Categoria from './components/Categoria/Categoria'
+import Register from './components/usuarios/Register'
+import DatosCuenta from './components/usuarios/Cuenta'
+import Productos from './components/producto/Productos'
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const { store, persistor } = generateStore();
 
@@ -27,9 +30,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       
         <Routes>
           <Route path='/' element={ <Inicio />}></Route>
+          <Route path='/cuenta/datos' element= {<DatosCuenta />}></Route>
           <Route path='/cuenta/login' element= {<Login />}></Route>
+          <Route path='/cuenta/register' element= {<Register />}></Route>
           <Route path='/cart' element= {<Carrito />}></Route>
           <Route path='/facturacion' element= {<Facturacion />}></Route>
+          <Route path='/productos' element= {<Productos />}></Route>
           <Route path="/producto/:id" element={<DetalleProducto />} />
           <Route path="/categoria/:id/:categoria" element={<Categoria />} />
         </Routes>

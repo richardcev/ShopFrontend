@@ -16,6 +16,7 @@ const DetalleProducto = () => {
     const { productsCart, subTotal } = cartproducts
     const [producto, setProducto] = useState([])
     const [cantidad, setCantidad] = useState(1);
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleIncrement = () => {
       
@@ -41,7 +42,7 @@ const DetalleProducto = () => {
     useEffect(() =>{
       console.log("entro a detalle producto")
       dispatch(setIsProductSelected(true))
-      fetch(`http://127.0.0.1:8000/productos/?id=${params.id}`)
+      fetch(`${apiUrl}productos/?id=${params.id}`)
       .then(response => response.json())
       .then(data =>{
         console.log("detalleproducto")
@@ -85,7 +86,7 @@ const DetalleProducto = () => {
             <div>
               <Imagen src={producto.imagen}/>
             </div>
-            <p style={{marginBottom: '20px', fontSize: '30px', fontWeight: 'bold'}}>${producto.precio}</p>
+            <p style={{marginBottom: '20px', fontSize: '30px'}}>${producto.precio}</p>
             <Select>
               <ButtonSelect onClick={handleDecrement}>-</ButtonSelect>
               <Input

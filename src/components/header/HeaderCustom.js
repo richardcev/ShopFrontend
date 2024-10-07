@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import logo from '../../assets/images/LOGOMATT2.png'
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';
 import CustomizedInputBase from "../inicio/searchProduct";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -23,18 +23,22 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import List from '@mui/material/List';
 import { Typography } from "@mui/material";
+import { isAuthenticatedUser, setAccessTokenUser, setRefreshTokenUser } from '../../redux/states/UserReducer';
 
 
 const HeaderCustom = () =>{
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
+    const { users } = useSelector((store) => store)
+    const { isAuthenticated, refresh } = users
     const [categorias, setCategorias] = useState([])
     const [subCategorias, setSubCategorias] = useState([])
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const openUser = Boolean(anchorEl);
+    const apiUrl = process.env.REACT_APP_API_URL;
 
 
     const toggleDrawer = (newOpen) => () => {
@@ -57,14 +61,14 @@ const HeaderCustom = () =>{
     };
 
     useEffect(() =>{
-        fetch('http://127.0.0.1:8000/categorias/')
+        fetch(`${apiUrl}categorias/`)
         .then(response => response.json())
         .then(categoriasData =>{
           setCategorias(categoriasData)
         })
         .catch(err=> console.error(err))
 
-        fetch('http://127.0.0.1:8000/subcategorias/')
+        fetch(`${apiUrl}subcategorias/`)
         .then(response => response.json())
         .then(data =>{
           setSubCategorias(data)
@@ -74,7 +78,7 @@ const HeaderCustom = () =>{
 
     const handleCategoria = (id, subcategoria) =>{
 
-    fetch(`http://127.0.0.1:8000/productos/?subcategoria=${id}`)
+    fetch(`${apiUrl}productos/?subcategoria=${id}`)
     .then(response => response.json())
     .then(data =>{
         console.log(data)
@@ -89,7 +93,7 @@ const HeaderCustom = () =>{
     const handleStart = () =>{
         const fetchProductos = async () => {
           try {
-            const response = await fetch('http://127.0.0.1:8000/productos/');
+            const response = await fetch(`${apiUrl}productos/`);
             const data = await response.json();
             dispatch(setProducts(data))
             navigate('/')
@@ -104,11 +108,35 @@ const HeaderCustom = () =>{
       navigate('/cart')
     }
 
-    const handleClickUser = (event) => {
+    const handleLogout= () =>{
+      const data= {
+        refresh: refresh
+      }
+      fetch(`${apiUrl}api/logout/`, {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.message == "Logout successful"){
+          dispatch(isAuthenticatedUser(false))
+          dispatch(setRefreshTokenUser(""))
+          dispatch(setAccessTokenUser(""))
+          navigate('/')
+        }
+      })
+      .catch(err=> console.error(err))
+
+    }
+
+    const handleMouseEnter = (event) => {
       setAnchorEl(event.currentTarget);
     };
-
-    const handleCloseUser = () => {
+  
+    const handleMouseLeave = () => {
       setAnchorEl(null);
     };
 
@@ -166,26 +194,53 @@ const HeaderCustom = () =>{
         <>
         <FirstHeader>
             <ContainerImg onClick={handleStart} >
-                <Imagen src={logo} alt="Supermercado" />
+                {/* <Imagen src={logo} alt="Supermercado" /> */}
+                <h2 style={{fontWeight: "bold", color: "white"}}>Matt Store</h2>
             </ContainerImg>
             <CustomizedInputBase />
-            
-            <PersonOutlineIcon
-              fontSize="large"
-              sx={{ p: 0, cursor: "pointer" }} 
-              style={{ color: "white", marginLeft: "5%" }}
-              onClick={handleClickUser}
-            />
-            <p style={{fontSize: "20px", cursor:"pointer", color: "white"}} onClick={handleClickUser}>Cuenta</p>
+            <Button 
+            sx={{
+              textTransform: 'none',
+              '&:hover': {
+                cursor: 'pointer',
+              },
+            }}
+            onMouseEnter={handleMouseEnter}
+            style={{ color: "white", marginLeft: "5%" }}
+            size="large"
+            >
+              <PersonOutlineIcon
+                fontSize="large"
+                sx={{ p: 0, cursor: "pointer" }} 
+              />
+              {
+                isAuthenticated ?
+                <span style={{fontSize: "18px", cursor:"pointer"}} >Mi Cuenta</span>
+                : 
+                <span style={{fontSize: "18px", cursor:"pointer"}} >Ingresa</span>
+              }
+                
+            </Button>
             <Menu
               anchorEl={anchorEl}
               open={openUser}
-              onClose={handleCloseUser}
+              onClose={handleMouseLeave}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
               transformOrigin={{ vertical: 'top', horizontal: 'left' }}
             >
-              <MenuItem onClick={handleCloseUser} component={Link} to="/cuenta/login">Iniciar sesión</MenuItem>
-              <MenuItem onClick={handleCloseUser}>Crear cuenta</MenuItem>
+              {
+                isAuthenticated ? 
+                <>
+                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/datos">Editar datos</MenuItem>
+                <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+                </>
+                :
+                <>
+                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/login">Iniciar sesión</MenuItem>
+                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/register">Crear cuenta</MenuItem>
+                </>
+              }
+
             </Menu>
 
             <LocalShippingOutlinedIcon
@@ -238,7 +293,7 @@ const NavBarContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 3fr; 
   padding: 4px;
-  background-color: #0B2034;
+  background-color: #2C3E59;
 `;
 
 // Estilos para cada opción del menú
@@ -262,8 +317,7 @@ const ContainerImg = styled.div`
 
 const FirstHeader = styled.div`
   display: flex;
-  align-items: center; /* Alinear elementos verticalmente en el centro */
+  align-items: center; 
   padding: 15px;
-  background-color: #02060A
-  /* Ajustar el margen entre ContainerImg y CustomizedInputBase */
+  background-color: #0B2034
 `

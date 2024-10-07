@@ -6,6 +6,9 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import { setProducts } from '../../redux/states/ProductReducer';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
+import LandingPage from './LandingPage';
+import Footer from './footer';
+import Ofertas from '../producto/Ofertas';
 const Inicio = () =>{
      const dispatch = useDispatch();
      const {
@@ -13,19 +16,18 @@ const Inicio = () =>{
     } = useSelector((store) => store);
 
     const { productos, isProductSelected } = products
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     useEffect(() =>{
         const fetchProductos = async () => {
             try {
-              const response = await fetch('http://127.0.0.1:8000/productos/');
+              const response = await fetch(`${apiUrl}productos/`);
               const data = await response.json();
               dispatch(setProducts(data))
             } catch (error) {
               console.error('Error al obtener los productos:', error);
             }
           };
-        console.log("el producto esta seleccionado ?")
-        console.log(isProductSelected)
         // Verifico si dan click en inicio después de haber visitado un detalle de producto
         if(!isProductSelected){
           fetchProductos()
@@ -37,7 +39,9 @@ const Inicio = () =>{
 
     return(
         <>
-        {/* <LandingPage/> */}
+        <LandingPage/>
+
+        <Ofertas/>
         <Container>
           <ProductContainer>
             {productos.map(producto => (
@@ -52,6 +56,7 @@ const Inicio = () =>{
             ))}
           </ProductContainer>
         </Container>
+        <Footer/>
         </>
     )
 }

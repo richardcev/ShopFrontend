@@ -1,0 +1,57 @@
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  
+  .carousel {
+    display: flex;
+    gap: 20px; /* Espacio entre productos */
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width: none; 
+  }
+  
+  .carousel::-webkit-scrollbar {
+    display: none; /* Oculta la barra de desplazamiento en Chrome, Safari y Opera */
+  }
+  
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .carousel-button.left {
+    left: 10px;
+  }
+  
+  .carousel-button.right {
+    right: 10px;
+  }
+  
+  .carousel > * {
+    min-width: 25%; /* Mostrar 4 productos en pantalla */
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .carousel > * {
+      min-width: 50%; /* Mostrar 2 productos en pantalla en dispositivos más pequeños */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .carousel > * {
+      min-width: 100%; /* Mostrar 1 producto en pantalla en dispositivos muy pequeños */
+    }
+  }
+  

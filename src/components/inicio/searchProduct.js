@@ -10,6 +10,7 @@ import { useState } from 'react';
 export default function CustomizedInputBase() {
     const dispatch = useDispatch();
     const [busqueda, setBusqueda] = useState('');
+    const apiUrl = process.env.REACT_APP_API_URL;
 
     const validoEntrada = (event) =>{
         event.preventDefault()
@@ -30,7 +31,7 @@ export default function CustomizedInputBase() {
 
     const fetchData = async () => {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/productos/?name=${busqueda.toLowerCase()}`);
+          const response = await fetch(`${apiUrl}productos/?name=${busqueda.toLowerCase()}`);
           const data = await response.json();
           dispatch(setProducts(data));
         } catch (error) {

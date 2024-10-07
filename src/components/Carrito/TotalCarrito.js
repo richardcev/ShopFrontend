@@ -41,7 +41,7 @@ const TotalCarrito = ({subtotal, total, setTotal}) =>{
             <p style={{fontSize: "20px"}}>${subtotal}</p>
             </Campo>
             <TopLine/>
-            <fieldset id = "group">
+            <fieldset id = "group" style={{ border: "none" }}>
             <Radio>
                 <label htmlFor="rec">Recoger pedido</label>
                 <input  style={{marginLeft:"5px"}}  type="radio" id="rec" name="group" value="rec" onChange={handleChange} checked={opcionSeleccionada === 'rec'}/>
@@ -74,6 +74,7 @@ const TotalCarrito = ({subtotal, total, setTotal}) =>{
              variant="contained"
              size='large'
              onClick={handleFinalizar}
+             style={{marginLeft: "120px", width: "65%", marginTop: "15px"}}
              >
             Finalizar compra
             </Button>
