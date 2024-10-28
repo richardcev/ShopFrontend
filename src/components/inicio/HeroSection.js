@@ -1,16 +1,22 @@
 
 import './HeroSection.css';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
+  const handleProductos = () =>{
+    navigate('/productos')
+  }
+
   return (
-    <div className="hero-container">
-      <h1 className="hero-title">Explora lo Último en Tecnología</h1>
-      <p className="hero-subtitle">Los mejores productos tecnológicos a tu alcance</p>
-      <div className="hero-button-container">
-        <button className="hero-primary-button">Ver Productos</button>
-        <button className="hero-secondary-button">Ofertas Especiales</button>
+    <section className="landing-section">
+      <div className="landing-content">
+        <h1>Bienvenidos a Matt Store</h1>
+        <p>Tu tienda de confianza en dispositivos tecnológicos. Encuentra los mejores audífonos, parlantes y más, con la mejor calidad y precios accesibles.</p>
+        <button className="shop-button" onClick={handleProductos}>Ver Productos</button>
       </div>
-    </div>
+    </section>
   );
 }
 

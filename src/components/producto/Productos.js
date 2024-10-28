@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { setProducts } from '../../redux/states/ProductReducer';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
 import styled from 'styled-components';
+import FiltrosProductos from "../Filtros/Filtros";
+import { Row, Col } from "react-bootstrap";
 
 
 const Productos = () =>{
@@ -15,21 +17,28 @@ const Productos = () =>{
 
 
    return(
-        <Container>
-            <ProductContainer>
-            {productos.map(producto => (
-                <Producto
-                key={producto.id}
-                id={producto.id}
-                nombre={producto.nombre}
-                precio={producto.precio}
-                imagen={producto.imagen}
-                categoria={producto.categoria_nombre}
-                todos={true}
-                />
-            ))}
-            </ProductContainer>
-        </Container>
+        <Row>
+          <Col xs={2}>
+            <FiltrosProductos/>
+          </Col>
+          <Col xs={10}>
+            <Container>
+                <ProductContainer>
+                {productos.map(producto => (
+                    <Producto
+                    key={producto.id}
+                    id={producto.id}
+                    nombre={producto.nombre}
+                    precio={producto.precio}
+                    imagen={producto.imagen}
+                    categoria={producto.categoria_nombre}
+                    todos={true}
+                    />
+                ))}
+                </ProductContainer>
+            </Container>
+          </Col>
+        </Row>
    )
 }
 

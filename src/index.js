@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import 'react-toastify/dist/ReactToastify.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
 import Login from './components/usuarios/Login'
 import DetalleProducto from './components/DetalleProducto/DetalleProducto'
 import Inicio from './components/inicio/inicio'
 import Carrito from './components/Carrito/Carrito'
-import Facturacion from './components/Compra/facturacion'
 import "./index.css"
 import AppFooter from './components/inicio/footer'
 import { Provider } from "react-redux";
@@ -17,7 +18,9 @@ import Categoria from './components/Categoria/Categoria'
 import Register from './components/usuarios/Register'
 import DatosCuenta from './components/usuarios/Cuenta'
 import Productos from './components/producto/Productos'
-import 'react-toastify/dist/ReactToastify.css'; 
+import SubCategoria from './components/Categoria/SubCategoria'
+import Footer from './components/inicio/footer'
+
 
 const { store, persistor } = generateStore();
 
@@ -34,11 +37,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path='/cuenta/login' element= {<Login />}></Route>
           <Route path='/cuenta/register' element= {<Register />}></Route>
           <Route path='/cart' element= {<Carrito />}></Route>
-          <Route path='/facturacion' element= {<Facturacion />}></Route>
           <Route path='/productos' element= {<Productos />}></Route>
           <Route path="/producto/:id" element={<DetalleProducto />} />
-          <Route path="/categoria/:id/:categoria" element={<Categoria />} />
+          <Route path="/:categoria/:subcategoria" element={<SubCategoria />} />
+          <Route path="/:categoria" element={<Categoria />} />
         </Routes>
+      <Footer/>
       </BrowserRouter>
     </PersistGate>
   </Provider>

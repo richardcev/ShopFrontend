@@ -1,17 +1,15 @@
-.carousel-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-  }
+.mainContainer {
+  display: grid;
+  grid-template-columns: 5% 90% 5%;
+}
   
   .carousel {
     display: flex;
-    gap: 20px; /* Espacio entre productos */
+    gap: 2%; /* Espacio entre productos */
     overflow-x: scroll;
     scroll-behavior: smooth;
-    scrollbar-width: none; 
+    scrollbar-width: none;
+    margin-top: 30px;
   }
   
   .carousel::-webkit-scrollbar {
@@ -19,28 +17,16 @@
   }
   
   .carousel-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #ffffff;
+    background: none;
+    color: #2C3E59;
     border: none;
     padding: 10px;
     cursor: pointer;
-    z-index: 1;
-  }
-  
-  .carousel-button.left {
-    left: 10px;
-  }
-  
-  .carousel-button.right {
-    right: 10px;
+    font-size: 40px;
   }
   
   .carousel > * {
-    min-width: 25%; /* Mostrar 4 productos en pantalla */
-    flex-shrink: 0;
+    min-width: 18.4%; /* Mostrar 4 productos en pantalla */
   }
   
   @media (max-width: 768px) {

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import './Header.css'
 import { Link } from 'react-router-dom';
 import logo from '../../assets/images/LOGOMATT2.png'
 import { useNavigate } from "react-router-dom";
@@ -24,21 +25,46 @@ import ListItemText from '@mui/material/ListItemText';
 import List from '@mui/material/List';
 import { Typography } from "@mui/material";
 import { isAuthenticatedUser, setAccessTokenUser, setRefreshTokenUser } from '../../redux/states/UserReducer';
+import { setCantidadProductos } from "../../redux/states/CartReducer";
+import UserMenu from "./UserMenu/UserMenu";
+import { Container, Row, Col } from 'react-bootstrap';
+import Badge from '@mui/material/Badge';
+import { styled as muiStyled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+
+
+const StyledBadge = muiStyled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -4,
+    top: 13,
+    padding: '0 4px',
+  },
+}));
 
 
 const HeaderCustom = () =>{
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const { users } = useSelector((store) => store)
+    const { users, cartproducts } = useSelector((store) => store)
     const { isAuthenticated, refresh } = users
     const [categorias, setCategorias] = useState([])
     const [subCategorias, setSubCategorias] = useState([])
     const [open, setOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [selectedSubCategories, setSelectedSubCategories] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const openUser = Boolean(anchorEl);
     const apiUrl = process.env.REACT_APP_API_URL;
+    const { productsCart, cantidadProductos } = cartproducts
+
+    useEffect(() =>{
+      let cantidad_updated= 0
+      for(let producto of productsCart){
+        cantidad_updated = cantidad_updated + producto.cantidad
+      }
+      dispatch(setCantidadProductos(cantidad_updated))
+    }, [productsCart])
 
 
     const toggleDrawer = (newOpen) => () => {
@@ -46,6 +72,8 @@ const HeaderCustom = () =>{
     };
 
     const handleCategoryClick = (categoria) => {
+      let categoriaFormat= categoria.nombre.toLowerCase().replace(/ /g, "-")
+      setSelectedCategory(categoriaFormat)
       let subCategoriasMenu = []
       for(let subcat of subCategorias){
         if(subcat.categoria === categoria.id){
@@ -53,11 +81,11 @@ const HeaderCustom = () =>{
         }
       }
       console.log(subCategoriasMenu)
-      setSelectedCategory(subCategoriasMenu);
+      setSelectedSubCategories(subCategoriasMenu);
     };
   
     const handleBackToCategories = () => {
-      setSelectedCategory(null);
+      setSelectedSubCategories(null);
     };
 
     useEffect(() =>{
@@ -76,18 +104,11 @@ const HeaderCustom = () =>{
         .catch(err=> console.error(err))
       },[])
 
-    const handleCategoria = (id, subcategoria) =>{
-
-    fetch(`${apiUrl}productos/?subcategoria=${id}`)
-    .then(response => response.json())
-    .then(data =>{
-        console.log(data)
-        dispatch(setProducts(data))
-        navigate(`/categoria/${id}/${subcategoria}`)
-        setOpen(false)
-        handleBackToCategories()
-    })
-    .catch(err => console.error(err))
+    const handleSubCategoria = (id, subcategoria) =>{
+      let subcatFormat = subcategoria.toLowerCase().replace(/ /g, "-")
+      navigate(`/${selectedCategory}/${subcatFormat}`, { state: { id: id } })
+      setOpen(false)
+      handleBackToCategories()
     }
 
     const handleStart = () =>{
@@ -143,7 +164,7 @@ const HeaderCustom = () =>{
     const DrawerList = (
       <Box sx={{ width: 300 }} role="presentation">
         {
-          selectedCategory ? (
+          selectedSubCategories ? (
             <>
               <Typography 
               variant="h6" sx={{ padding: '16px' }} 
@@ -154,9 +175,9 @@ const HeaderCustom = () =>{
               Menú principal
               </Typography>
               <List>
-              {selectedCategory.map((item) => (
+              {selectedSubCategories.map((item) => (
                 <ListItem key={item.nombre} disablePadding>
-                  <ListItemButton onClick={() => handleCategoria(item.id, item.nombre)}>
+                  <ListItemButton onClick={() => handleSubCategoria(item.id, item.nombre)}>
                     <ListItemText primary={item.nombre} />
                     <KeyboardArrowRightIcon/>
                   </ListItemButton>
@@ -192,79 +213,50 @@ const HeaderCustom = () =>{
 
     return(
         <>
-        <FirstHeader>
-            <ContainerImg onClick={handleStart} >
-                {/* <Imagen src={logo} alt="Supermercado" /> */}
-                <h2 style={{fontWeight: "bold", color: "white"}}>Matt Store</h2>
-            </ContainerImg>
-            <CustomizedInputBase />
-            <Button 
-            sx={{
-              textTransform: 'none',
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            }}
-            onMouseEnter={handleMouseEnter}
-            style={{ color: "white", marginLeft: "5%" }}
-            size="large"
-            >
-              <PersonOutlineIcon
-                fontSize="large"
-                sx={{ p: 0, cursor: "pointer" }} 
-              />
-              {
-                isAuthenticated ?
-                <span style={{fontSize: "18px", cursor:"pointer"}} >Mi Cuenta</span>
-                : 
-                <span style={{fontSize: "18px", cursor:"pointer"}} >Ingresa</span>
-              }
-                
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={openUser}
-              onClose={handleMouseLeave}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            >
-              {
-                isAuthenticated ? 
-                <>
-                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/datos">Editar datos</MenuItem>
-                <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
-                </>
-                :
-                <>
-                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/login">Iniciar sesión</MenuItem>
-                <MenuItem onClick={handleMouseLeave} component={Link} to="/cuenta/register">Crear cuenta</MenuItem>
-                </>
-              }
+        <Container fluid style={{padding: '15px', backgroundColor: '#0B2034'}}>
+          <Row>
+            <Col xs={2} onClick={handleStart} style={{cursor: 'pointer', display: 'flex', alignItems: 'center'}}>
+              <h4 style={{fontWeight: "bold", color: "white", marginLeft: '11%'}}>Matt Store</h4>
+            </Col>
+            <Col xs={6}>
+              <CustomizedInputBase />
+            </Col>
+            <Col xs={4}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <UserMenu isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
 
-            </Menu>
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px',  fontSize: '30px' }}>
+                <LocalShippingOutlinedIcon
+                  fontSize="inherit"
+                  sx={{ p: 0, cursor: "pointer", color: "white", marginRight: "5px" }}
+                />
+                <span style={{fontSize: "18px", cursor:"pointer", color: "white"}} onClick={handleCart}>Pedidos</span>
+              </div>
 
-            <LocalShippingOutlinedIcon
-              fontSize="large"
-              sx={{ p: 0, cursor: "pointer" }} 
-              style={{ color: "white", marginLeft: "2%" }}
-
-            />
-            <p style={{fontSize: "20px", cursor:"pointer", color: "white"}} onClick={handleCart}>Pedidos</p>
-
-            <ShoppingCartOutlinedIcon
-                fontSize="large"
-                sx={{ p: 0, cursor: "pointer" }} 
-                onClick={handleCart}
-                style={{ color: "white", marginLeft: "2%" }}
-            />
-            <p style={{fontSize: "20px", cursor:"pointer", color: "white"}} onClick={handleCart}>Carrito</p>
-        </FirstHeader>
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', fontSize: '30px' }}>
+              <IconButton aria-label="cart">
+                <StyledBadge badgeContent={cantidadProductos} color="warning" showZero>
+                  <ShoppingCartOutlinedIcon
+                    fontSize="inherit"
+                    sx={{ p: 0, cursor: "pointer", color: "white", }}
+                    onClick={handleCart}
+                  />
+                </StyledBadge>
+              </IconButton>
+                {/* <div className="conteo-carrito">
+                  <span className="cantidad" onClick={handleCart}>{cantidadProductos}</span>
+                </div> */}
+              </div>
+            </div>
+            </Col>
+          </Row>
+        </Container>
         <NavBarContainer>
           <div>
             <Button
               id="basic-button"
               onClick={toggleDrawer(true)}
-              style={{color:"white", marginLeft: "45px", padding:"0"}}
+              style={{color:"white", marginLeft: "9%", padding:"0"}}
             >
                 <MenuIcon style={{cursor:"pointer", color:"white"}}/>
                 CATEGORÍAS
@@ -281,13 +273,6 @@ const HeaderCustom = () =>{
 export default HeaderCustom;
 
 
-const TopLine = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
 // Estilos para el navbar
 const NavBarContainer = styled.div`
   display: grid;
@@ -295,29 +280,3 @@ const NavBarContainer = styled.div`
   padding: 4px;
   background-color: #2C3E59;
 `;
-
-// Estilos para cada opción del menú
-const MenuOption = styled.span`
-  margin: 0 10px;
-  cursor: pointer;
-`;
-
-const Imagen = styled.img`
-  width: 70%;
-  object-fit: cover;
-`;
-
-
-const ContainerImg = styled.div`
-  margin-left: 30px;
-  margin-right: 30px;
-  cursor: pointer;
-  width: 15%;
-`;
-
-const FirstHeader = styled.div`
-  display: flex;
-  align-items: center; 
-  padding: 15px;
-  background-color: #0B2034
-`

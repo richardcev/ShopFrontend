@@ -1,45 +1,44 @@
-.hero-container {
-    background-color: #F3F4F6; /* Gris moderno */
-    color: #333; /* Texto en gris oscuro */
-    text-align: center;
-    padding: 60px 20px;
-  }
-  
-  .hero-title {
-    font-size: 48px;
-    margin: 0 0 20px 0;
-    font-weight: bold;
-  }
-  
-  .hero-subtitle {
-    font-size: 24px;
-    margin: 0 0 40px 0;
-    color: #666; /* Gris intermedio para el subtítulo */
-  }
-  
-  .hero-button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .hero-primary-button {
-    background-color: #007BFF; /* Azul moderno para el botón principal */
-    color: #fff;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .hero-secondary-button {
-    background-color: #6C757D; /* Gris oscuro para el botón secundario */
-    color: #fff;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+.landing-section {
+  height: 100vh;
+  background-image: url('../../assets/images/musica.jpg'); /* Cambia por el link de la imagen de fondo */
+  background-size: cover;
+  background-position: right;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 50px;
+}
+
+.landing-content {
+  margin-top: 12%;
+  max-width: 40%;
+  margin-right: auto;
+}
+
+.landing-content h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.landing-content p {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.shop-button {
+  padding: 15px 30px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.shop-button:hover {
+  background-color: #0056b3;
+}
+
   

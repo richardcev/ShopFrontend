@@ -6,16 +6,15 @@ import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useEffect, useState } from "react";
 import { updateProduct } from "../../redux/states/CartReducer";
 import TotalCarrito from "./TotalCarrito";
+import './Carrito.css'
+import { Container, Row, Col } from 'react-bootstrap';
+import CantidadProductos from "../CantidadProductos/CantidadProductos";
 
 const Carrito = () =>{
     const { cartproducts } = useSelector((store) => store)
     const { productsCart, subTotal } = cartproducts;
     const [totalScreen, setTotalScreen] = useState(subTotal)
     const dispatch= useDispatch();
-
-    const [cantidad, setCantidad] = useState(1);
-    const numeros = Array.from({ length: 50 }, (_, index) => index + 1);
-    const { Option } = Select;
 
 
     useEffect(() =>{
@@ -38,98 +37,94 @@ const Carrito = () =>{
         setTotalScreen(newTotal.toFixed(2))
     }
 
-    const handleSelect= (e, product) =>{
-      const value = e.target.value
-      setCantidad(value)
-      let updatedProduct = product
-      updatedProduct.cantidad = value
-      let total = value * updatedProduct.precio
+    const calculateNewTotal = (updatedProduct) =>{
+      let total = updatedProduct.cantidad * updatedProduct.precio
       let subtotal = (Number(subTotal) - Number(updatedProduct.total) + total )
       let newTotal = (Number(totalScreen) - Number(updatedProduct.total) + total )
       updatedProduct.total=  total.toFixed(2)
       dispatch(setSubTotal(subtotal.toFixed(2)))
       dispatch(updateProduct(updatedProduct))
       setTotalScreen(newTotal.toFixed(2))
+
     }
 
+    const handleInputChange = (e, product) => {
+      // Verificamos si el valor ingresado es un número positivo o si está vacío (borrado).
+      const value = e.target.value;
+      if (/^\d*$/.test(value) && (value === "" || parseInt(value) >= 1)) {
+        // Si es válido o está vacío, establecer la cantidad como un número entero.
+        let updatedProduct = product
+        updatedProduct.cantidad = value === "" ? "" : parseInt(value)
+        calculateNewTotal(updatedProduct)
+      } 
+    };
+
+    const handleIncrement = (product) => {
+      let updatedProduct = product
+      updatedProduct.cantidad = product.cantidad + 1
+      calculateNewTotal(updatedProduct)
+    };
+  
+    const handleDecrement = (product) => {
+      if (product.cantidad > 1){
+        let updatedProduct = product
+        updatedProduct.cantidad = product.cantidad - 1
+        calculateNewTotal(updatedProduct)
+      }
+    };
+
+
     return(
-      < ParentContainer>
-        <Container>
-        {
+      <Container className="principal">
+        <Row>
+          <Col xs={7} >
+          {
             productsCart.map((product) =>(
               <>
               <TopLine/>
-              <Product key={product.id}>
-                <div>
-                <Imagen src={product.imagen}/>
-                </div>
-                <div style={{marginTop:"20px"}}>
-                  <h3>{product.nombre}</h3>
+              <Row key={product.id}>
+                <Col xs={4}>
+                  <Imagen src={product.imagen}/>
+                </Col>
+                <Col xs={6} style={{marginTop:"20px"}}>
+                  <p className="nombreProducto">{product.nombre}</p>
                   <Opciones>
-                    <FormControl variant="outlined" size="small">
-                        <InputLabel>Cant</InputLabel>
-                        <Select
-                            label="Cantidad"
-                            value={product.cantidad}
-                            onChange={(selectedValue) => handleSelect(selectedValue, product)}
-                        >
-                            {numeros.map((numero) => (
-                                <MenuItem key={numero} value={numero}>
-                                    {numero}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <CantidadProductos
+                      cantidad={product.cantidad} 
+                      handleDecrement={() => handleDecrement(product)} 
+                      handleIncrement={() => handleIncrement(product)}
+                      handleInputChange={(e) => handleInputChange(e, product)}
+                    />
                     <RemoveButton onClick={() => handleRemoveProduct(product.id)}>
                           Eliminar
                     </RemoveButton>
                   </Opciones>
-                </div>
-                <div style={{marginTop:"18px"}}>
-                <Precio>${product.precio}</Precio>
-                </div>
-              </Product>
+                </Col>
+                <Col xs={2} style={{marginTop:"18px"}}>
+                  <p className="precio">${product.precio}</p>
+                </Col>
+              </Row>
               </>
             ))
-        }
-          <TopLine/>
-        </Container>
-        <TotalCarrito subtotal={subTotal} total={totalScreen} setTotal={setTotalScreen}/>
-        </ParentContainer>
+          }
+            <TopLine/>
+          </Col>
+          <Col xs={5} >
+            <TotalCarrito subtotal={subTotal} total={totalScreen} setTotal={setTotalScreen}/>
+          </Col>
+        </Row>
+      </Container>
     )
 }
 export default Carrito;
 
-const ParentContainer= styled.div`
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-margin-left: 10%;
-margin-right: 10%;
-margin-top: 3%;
-`
-
-const Container = styled.div`
-  
-  margin-top: 3%;
-  background-color: #FFFFFF
-
-`;
-
-const Product = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 3%;
-  margin-top: 3px;
-  width: 40%;
-
-`;
-
 const RemoveButton = styled.button`
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 15px;
   margin-left: 18px;
   cursor: pointer;
+  color: #1976D2; 
 `;
 
 
@@ -143,14 +138,8 @@ const Imagen = styled.img`
   height: 150px;
 `;
 
-const Precio= styled.p`
-  font-size: 22px;
-  font-weight: bold;
-  margin-left: 120px;
-`
-
 const TopLine = styled.div`
-  width: 90%;
+  width: 100%;
   height: 1px;
   background-color: #ccc;
 `;

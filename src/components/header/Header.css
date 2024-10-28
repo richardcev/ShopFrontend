@@ -1,0 +1,17 @@
+.conteo-carrito{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #E6A840;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.cantidad{
+    font-size: 12px;
+    cursor:pointer; 
+    color: white;
+}

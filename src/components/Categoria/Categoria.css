@@ -1,0 +1,28 @@
+.container-categorias {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+    gap: 20px; /* Espacio entre las columnas y filas */
+    padding: 20px; /* Espaciado interno del contenedor */
+    margin-left: 7%;
+}
+
+.categoria {
+    border: 4px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    /* Remove fixed width */
+    width: 70%; /* Asegura que ocupe todo el espacio disponible en la columna */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle un efecto de tarjeta */
+    cursor: pointer;
+
+}
+
+.categoria p{
+    font-size: 23px;
+    font-weight: bold;
+    color: #0047AB;
+    text-decoration: underline;
+    text-decoration-color: #0047AB; /* Subrayado del mismo color azul */
+    text-underline-offset: 7px;
+}

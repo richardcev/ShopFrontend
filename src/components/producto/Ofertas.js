@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import './Ofertas.css';
 import Producto from './Producto';
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +16,31 @@ const Ofertas = () => {
 
     const { productos, isProductSelected } = products
     const apiUrl = process.env.REACT_APP_API_URL;
+
+    const [cardWidth, setCardWidth] = useState(0);
+
+    useEffect(() => {
+      const updateCardWidth = () => {
+        const firstCard = carouselRef.current.firstChild;
+        if (firstCard) {
+          const gapPercentage = parseFloat(getComputedStyle(carouselRef.current).gap);
+          const containerWidth = carouselRef.current.clientWidth;
+          const gap = (gapPercentage / 100) * containerWidth; 
+          const totalWidth = firstCard.clientWidth + gap;
+          setCardWidth(totalWidth);
+        }
+      };
+  
+      // Actualizamos el ancho del card al cargar y al redimensionar la ventana
+      window.addEventListener('resize', updateCardWidth);
+      updateCardWidth();
+  
+      return () => {
+        window.removeEventListener('resize', updateCardWidth);
+      };
+    }, []);
+
+
 
     useEffect(() =>{
         const fetchProductos = async () => {
@@ -41,35 +66,35 @@ const Ofertas = () => {
 
   const scrollLeft = () => {
     carouselRef.current.scrollBy({
-      left: -carouselRef.current.clientWidth,
+      left: -cardWidth,
       behavior: 'smooth'
     });
   };
 
   const scrollRight = () => {
     carouselRef.current.scrollBy({
-      left: carouselRef.current.clientWidth,
+      left: cardWidth,
       behavior: 'smooth'
     });
   };
 
   return (
-    <div className="carousel-container" style={{marginTop: "30px"}}>
+    <div className='mainContainer'>
       <button className="carousel-button left" onClick={scrollLeft}>‹</button>
-      <div className="carousel" ref={carouselRef}>
-        {productos.map(producto => 
-                producto.destacado && (
-                    <Producto
-                    key={producto.id}
-                    id={producto.id}
-                    nombre={producto.nombre}
-                    precio={producto.precio}
-                    imagen={producto.imagen}
-                    categoria={producto.categoria_nombre}
-                  />
-                )
-        )}
-      </div>
+        <div className="carousel" ref={carouselRef}>
+          {productos.map(producto => 
+                  producto.destacado && (
+                      <Producto
+                      key={producto.id}
+                      id={producto.id}
+                      nombre={producto.nombre}
+                      precio={producto.precio}
+                      imagen={producto.imagen}
+                      categoria={producto.categoria_nombre}
+                    />
+                  )
+          )}
+        </div>
       <button className="carousel-button right" onClick={scrollRight}>›</button>
     </div>
   );

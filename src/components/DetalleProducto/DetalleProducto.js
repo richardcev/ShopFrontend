@@ -2,24 +2,30 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
 import { setIsProductSelected } from '../../redux/states/ProductReducer';
 import { useSelector } from 'react-redux';
 import { addProduct, updateProduct } from '../../redux/states/CartReducer';
 import { useNavigate } from 'react-router-dom';
-import { setSubTotal } from '../../redux/states/CartReducer';
+import { setSubTotal, setCantidadProductos } from '../../redux/states/CartReducer';
+import CantidadProductos from '../CantidadProductos/CantidadProductos';
+import DetalleItems from './DetalleItems/DetalleItems';
+import './DetalleProducto.css'
 
 const DetalleProducto = () => {
     const dispatch = useDispatch();
     const params = useParams()
     const { cartproducts } = useSelector((store) => store)
     const { productsCart, subTotal } = cartproducts
-    const [producto, setProducto] = useState([])
+    const [producto, setProducto] = useState(null)
     const [cantidad, setCantidad] = useState(1);
     const apiUrl = process.env.REACT_APP_API_URL;
 
     const handleIncrement = () => {
-      
       setCantidad(cantidad + 1);
     };
   
@@ -28,7 +34,8 @@ const DetalleProducto = () => {
         setCantidad(cantidad - 1);
       }
     };
-
+    
+    //ESTO APLICA CUANDO EL USUARIO ESCRIBE UN NUMERO (NO USA LOS BOTONES + Y -)
     const handleInputChange = (e) => {
       // Verificamos si el valor ingresado es un número positivo o si está vacío (borrado).
       const value = e.target.value;
@@ -40,7 +47,6 @@ const DetalleProducto = () => {
 
     const navigate = useNavigate();
     useEffect(() =>{
-      console.log("entro a detalle producto")
       dispatch(setIsProductSelected(true))
       fetch(`${apiUrl}productos/?id=${params.id}`)
       .then(response => response.json())
@@ -79,37 +85,64 @@ const DetalleProducto = () => {
     }
     
     return (
-      <>
-        <Container>
-          <div>
-            <p style={{fontSize: '30px', fontWeight: 'bold'}}>{producto.nombre}</p>
-            <div>
+        <>
+        {
+          producto && 
+          <> 
+          <Breadcrumbs className='breadcumbs' separator="›" sx={{margin: '3% 0 0 5%' }}>
+          <Link
+            component={RouterLink}
+            underline="hover" 
+            color="inherit" 
+            to={`/${producto.categoria_nombre.toLowerCase().replace(/ /g, "-")}`}
+            state={{ id: producto.categoria }}
+            >
+            {producto.categoria_nombre}
+          </Link>
+          <Link
+            component={RouterLink}
+            underline="hover"
+            color="inherit"
+            to={`/${producto.categoria_nombre.toLowerCase().replace(/ /g, "-")}/${producto.sub_categoria_nombre.toLowerCase().replace(/ /g, "-")}`} // Usa `to` en lugar de `href`
+            state={{ id: producto.subcategoria }} // Esta línea es válida para pasar el estado
+          >
+            {producto.sub_categoria_nombre}
+          </Link>
+          <Typography sx={{ color: 'text.primary' }}>{producto.nombre}</Typography>
+          </Breadcrumbs>
+          
+          <Container>
+            <div className='imagen'>
               <Imagen src={producto.imagen}/>
             </div>
-            <p style={{marginBottom: '20px', fontSize: '30px'}}>${producto.precio}</p>
-            <Select>
-              <ButtonSelect onClick={handleDecrement}>-</ButtonSelect>
-              <Input
-                type="text"
-                value={cantidad}
-                style={{width:"100px"}}
-                onChange={handleInputChange}
+            <div className='datosProducto'>
+              <p style={{marginBottom: '10px'}}>{producto.nombre}</p>
+              <p style={{marginBottom: '20px', fontWeight: 'bold', fontSize: '20px'}}>${producto.precio}</p>
+              <CantidadProductos 
+                cantidad={cantidad} 
+                handleDecrement={handleDecrement} 
+                handleIncrement={handleIncrement}
+                handleInputChange={handleInputChange}
               />
-              <ButtonSelect onClick={handleIncrement}>+</ButtonSelect>
-            </Select>
-
-            <Button 
-              variant='contained' 
-              size='large' 
-              onClick={addProductCard}
-              >
-              Añadir al carrito
-            </Button>
-
-          </div>
-        </Container>
-
-      </>
+  
+              <Button 
+                variant='contained' 
+                size='large' 
+                onClick={addProductCard}
+                sx={{ 
+                  textTransform: 'none',
+                  backgroundColor: '#2C3E59',
+                  marginTop: '25px'
+                 }}
+                >
+                Añadir al carrito
+              </Button>
+            </div>
+          </Container>
+          <DetalleItems producto={producto.id}/>
+          </>
+        }
+        </>
     );
   };
 
@@ -118,39 +151,11 @@ export default DetalleProducto;
 
 
 const Container = styled.div`
-  margin-top: 20px;
+  margin-top: 50px;
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  height: 100vh; /* Ocupa el 100% del alto de la ventana */
-
-  div {
-    text-align: center; /* Alinea el contenido del segundo div al centro */
-  }
+  margin-left: 15%;
 `;
-
-const Select = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 15px;
-`;
-
-const ButtonSelect= styled.button`
-
-border: none;
-padding: 10px 15px;
-font-size: 20px;
-cursor: pointer;
-`
-
-const Input = styled.input`
-width: 50px;
-text-align: center;
-font-size: 20px;
-padding: 5px;
-`
 
 const Imagen = styled.img`
-  width: 250px; /* Establece el ancho deseado en píxeles */
-  height: 250px; /* Establece la altura deseada en píxeles */
+  width: 100%; /* Establece el ancho deseado en píxeles */
 `;

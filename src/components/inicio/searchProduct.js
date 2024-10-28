@@ -40,26 +40,25 @@ export default function CustomizedInputBase() {
     };
   return (
     <Busqueda>
-    <Paper
-      component="form"
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 600 }}
-    >
-      <InputBase
-        sx={{ ml: 1, flex: 1 }}
-        placeholder="Buscar producto"
-        inputProps={{ 'aria-label': 'buscar producto' }}
-        onChange={validoEntrada}
-        onKeyDown={handleKeyDown}
-      />
-      <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={handleBusqueda} disabled={!busqueda}>
-        <SearchIcon />
-      </IconButton>
-    </Paper>
+      <Paper
+        component="form"
+        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
+      >
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Busca tu producto"
+          inputProps={{ 'aria-label': 'buscar producto' }}
+          onChange={validoEntrada}
+          onKeyDown={handleKeyDown}
+        />
+        <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={handleBusqueda} disabled={!busqueda}>
+          <SearchIcon />
+        </IconButton>
+      </Paper>
     </Busqueda>
   );
 }
 
 const Busqueda = styled.div`
-margin-left: 5%;
-
+width: 100%
 `;
